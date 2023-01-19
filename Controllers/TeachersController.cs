@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using UniversityManagementApp.Data;
 using UniversityManagementApp.Models;
+using UniversityManagementApp.ViewModels;
 
 namespace UniversityManagementApp.Controllers
 {
@@ -20,9 +21,36 @@ namespace UniversityManagementApp.Controllers
         }
 
         // GET: Teachers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchFullName, string searchDegree, string searchAcademicRank)
         {
-            return View(await _context.Teacher.ToListAsync());
+            //return View(await _context.Teacher.ToListAsync());
+            IEnumerable<Teacher> teachers = _context.Teacher.AsEnumerable();
+            IQueryable<string> degrees = _context.Teacher.OrderBy(t => t.Degree).Select(t => t.Degree).Distinct();
+            IQueryable<string> ranks = _context.Teacher.OrderBy(t => t.AcademicRank).Select(t => t.AcademicRank).Distinct();
+
+            if (!String.IsNullOrEmpty(searchFullName))
+            {
+                teachers = teachers.Where(t => t.FullName.Contains(searchFullName)); // filter by FullName
+            }
+
+            if (!string.IsNullOrEmpty(searchDegree))
+            {
+                teachers = teachers.Where(t => t.Degree == searchDegree); // filter by Semester
+            }
+
+            if (!string.IsNullOrEmpty(searchAcademicRank))
+            {
+                teachers = teachers.Where(t => t.AcademicRank == searchAcademicRank); // filter by Programme
+            }
+
+            var viewmodel = new TeacherDegreeRankViewModel
+            {
+                Teachers =  teachers,
+                Degrees = new SelectList( degrees.AsEnumerable()),
+                Ranks = new SelectList( ranks.AsEnumerable()),
+            };
+
+            return View(viewmodel);
         }
 
         // GET: Teachers/Details/5

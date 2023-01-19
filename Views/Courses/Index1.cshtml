@@ -1,57 +1,44 @@
-﻿@model UniversityManagementApp.ViewModels.CourseSemesterProgrammeViewModel //IEnumerable<UniversityManagementApp.Models.Course>
+﻿@model UniversityManagementApp.ViewModels.CoursesByTeacherViewModel //IEnumerable<UniversityManagementApp.Models.Course>
 
 @{
-    ViewData["Title"] = "All courses";
+    ViewData["Title"] = "Courses by teacher";
 }
 
 <h1>Courses</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-    <a asp-action="Index1">Courses by Teacher</a>
-</p>
-
-<form asp-asp-controller="Courses" asp-action="Index" method="get">
+<form asp-asp-controller="Courses" asp-action="Index1" method="get">
     <p>
-        Semester:
-        <select asp-for="SearchSemester" asp-items="Model.Semesters">
+        Teacher:
+        <select asp-for="SelectTeacher" asp-items="Model.Teachers">
             <option value="">All</option>
         </select>
-        Programme:
-        <select asp-for="SearchProgramme" asp-items="Model.Programmes">
-            <option value="">All</option>
-        </select>
-
-        Course Title: <input type="text" asp-for="SearchTitle"/>
         <input type="submit" value="Filter" />
     </p>
-
 </form>
 
 <table class="table">
     <thead>
         <tr>
             <th>
-            @Html.DisplayNameFor(model => model.Courses[0].Title)
+            @Html.DisplayNameFor(model => model.Courses.FirstOrDefault().Title)
             </th>
             <!--
             <th>
-            @Html.DisplayNameFor(model => model.Courses[0].Credits)
+            @Html.DisplayNameFor(model => model.Courses.FirstOrDefault().Credits)
             </th>
             <th>
-            @Html.DisplayNameFor(model => model.Courses[0].Semester)
+            @Html.DisplayNameFor(model => model.Courses.FirstOrDefault().Semester)
             </th>
             <th>
-            @Html.DisplayNameFor(model => model.Courses[0].Programme)
+            @Html.DisplayNameFor(model => model.Courses.FirstOrDefault().Programme)
             </th>
             <th>
-            @Html.DisplayNameFor(model => model.Courses[0].EducationLevel)
+            @Html.DisplayNameFor(model => model.Courses.FirstOrDefault().EducationLevel)
             </th>
             <th>
-            @Html.DisplayNameFor(model => model.Courses[0].FirstTeacher)
+            @Html.DisplayNameFor(model => model.Courses.FirstOrDefault().FirstTeacher)
             </th>
             <th>
-            @Html.DisplayNameFor(model => model.Courses[0].SecondTeacher)
+            @Html.DisplayNameFor(model => model.Courses.FirstOrDefault().SecondTeacher)
             </th>
             <th></th>
             -->
@@ -78,10 +65,10 @@
                 @Html.DisplayFor(modelItem => item.EducationLevel)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FirstTeacher.FullName)
+                @Html.DisplayFor(modelItem => item.FirstTeacher.FullName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.SecondTeacher.FullName)
+                @Html.DisplayFor(modelItem => item.SecondTeacher.FullName)
                 </td>
                 -->
                 <td>
@@ -93,3 +80,6 @@
     }
     </tbody>
 </table>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

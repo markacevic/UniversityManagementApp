@@ -19,29 +19,75 @@ namespace UniversityManagementApp.Models
                 }
 
                 context.Student.AddRange(
-                    new Student
+                         new Student
+                         { /*Id = 1, */
+                             StudentIndex = "192/2017",
+                             FirstName = "Tamara",
+                             LastName = "Markachevikj",
+                             EnrollmentDate = DateTime.Now,
+                             CurrentSemester = 8
+                         },
+                         new Student
+                         { /*Id = 2, */
+                             StudentIndex = "41/2017",
+                             FirstName = "Angela",
+                             LastName = "Najdoska",
+                             EnrollmentDate = DateTime.Now,
+                             CurrentSemester = 8
+                         },
+                         new Student
+                         { /*Id = 3, */
+                             StudentIndex = "101/2017",
+                             FirstName = "Marija",
+                             LastName = "Milojkovska",
+                             EnrollmentDate = DateTime.Now,
+                             CurrentSemester = 8
+                         }
+                      );
+                context.SaveChanges();
+
+                context.Teacher.AddRange(
+                    new Teacher
                     { /*Id = 1, */
-                        StudentIndex = "192/2017",
-                        FirstName = "Tamara",
-                        LastName = "Markachevikj",
-                        EnrollmentDate = DateTime.Now,
-                        CurrentSemester = 8
+                        FirstName = "Valentin",
+                        LastName = "Rakovikj",
+                        Degree = "Doctor"
                     },
-                    new Student
+                    new Teacher
                     { /*Id = 2, */
-                        StudentIndex = "41/2017",
-                        FirstName = "Angela",
-                        LastName = "Najdoska",
-                        EnrollmentDate = DateTime.Now,
-                        CurrentSemester = 8
+                        FirstName = "Vladimir",
+                        LastName = "Atanasovski",
+                        Degree = "Doctor"
                     },
-                    new Student
+                    new Teacher
                     { /*Id = 3, */
-                        StudentIndex = "101/2017",
-                        FirstName = "Marija",
-                        LastName = "Milojkovska",
-                        EnrollmentDate = DateTime.Now,
-                        CurrentSemester = 8
+                        FirstName = "Goran",
+                        LastName = "Jakimovski",
+                        Degree = "Doctor"
+                    },
+                    new Teacher
+                    { /*Id = 4, */
+                        FirstName = "Marko",
+                        LastName = "Porjazoski",
+                        Degree = "Doctor"
+                    },
+                    new Teacher
+                    { /*Id = 5, */
+                        FirstName = "Daniel",
+                        LastName = "Denkovski",
+                        Degree = "Doctor"
+                    },
+                    new Teacher
+                    { /*Id = 6, */
+                        FirstName = "Pero",
+                        LastName = "Latkovski",
+                        Degree = "Doctor"
+                    },
+                    new Teacher
+                    { /*Id = 7, */
+                        FirstName = "Tomislav",
+                        LastName = "Shuminoski",
+                        Degree = "Doctor"
                     }
                  );
                 context.SaveChanges();
@@ -54,8 +100,8 @@ namespace UniversityManagementApp.Models
                         Semester = 5,
                         Programme = "KTI",
                         EducationLevel = "HTML/CSS/JS/JQ/ANGULAR",
-                        //FirstTeacherId = 1,
-                        //SecondTeacherId = 2
+                        FirstTeacherId = 1,
+                        SecondTeacherId = 2
                     },
                     new Course
                     { /*Id = 2, */
@@ -64,8 +110,8 @@ namespace UniversityManagementApp.Models
                         Semester = 6,
                         Programme = "KTI",
                         EducationLevel = "PHP",
-                        //FirstTeacherId = 3,
-                        //SecondTeacherId = 4
+                        FirstTeacherId = 3,
+                        SecondTeacherId = 4
                     },
                     new Course
                     { /*Id = 3, */
@@ -74,8 +120,8 @@ namespace UniversityManagementApp.Models
                         Semester = 6,
                         Programme = "KTI",
                         EducationLevel = "ASP.NET CORE",
-                        //FirstTeacherId = 5,
-                        //SecondTeacherId = 6
+                        FirstTeacherId = 5,
+                        SecondTeacherId = 6
                     },
                     new Course
                     { /*Id = 4, */
@@ -84,20 +130,84 @@ namespace UniversityManagementApp.Models
                         Semester = 7,
                         Programme = "KTI",
                         EducationLevel = "java/XML/JSON/SOAP/WSDL/REST",
-                        //FirstTeacherId = 7,
-                        //SecondTeacherId = 3
+                        FirstTeacherId = 7,
+                        SecondTeacherId = 3
                     }
                 );
                 context.SaveChanges();
 
 
 
-          
 
 
+                context.Enrollment.AddRange(
+                    new Enrollment
+                    { /*Id = 1, */
+                        CourseId = 1,
+                        StudentId = 1,
+                        Semester = 5,
+                        year = 3,
+                        grade = 4
+                    },
+                    new Enrollment
+                    { /*Id = 2, */
+                        CourseId = 1,
+                        StudentId = 2,
+                        Semester = 5,
+                        year = 3,
+                        grade = 4
+                    },
+                   new Enrollment
+                   { /*Id = 3, */
+                       CourseId = 1,
+                       StudentId = 3,
+                       Semester = 5,
+                       year = 3,
+                       grade = 4
+                   },
+                   new Enrollment
+                   { /*Id = 4, */
+                       CourseId = 2,
+                       StudentId = 1,
+                       Semester = 6,
+                       year = 3,
+                       grade = 4
+                   },
+                    new Enrollment
+                    { /*Id = 5, */
+                        CourseId = 2,
+                        StudentId = 2,
+                        Semester = 6,
+                        year = 3,
+                        grade = 4
+                    },
+                   new Enrollment
+                   { /*Id = 6, */
+                       CourseId = 2,
+                       StudentId = 3,
+                       Semester = 6,
+                       year = 3,
+                       grade = 4
+                   },
 
-                
-
+                   new Enrollment
+                   { /*Id = 7, */
+                       CourseId = 3,
+                       StudentId = 1,
+                       Semester = 6,
+                       year = 3,
+                       grade = 4
+                   },
+                   new Enrollment
+                   { /*Id = 7, */
+                       CourseId = 4,
+                       StudentId = 2,
+                       Semester = 7,
+                       year = 4,
+                       grade = 4
+                   }
+                   );
+                context.SaveChanges();
             }
 
         }

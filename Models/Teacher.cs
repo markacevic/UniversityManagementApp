@@ -33,6 +33,11 @@ namespace UniversityManagementApp.Models
         [DataType(DataType.Date)]
         public DateTime? HireDate { get; set; }
 
+        public string FullName 
+        { 
+            get { return String.Format("{0} {1}", FirstName, LastName); } 
+        }
+
         ICollection<Course> Courses { get; set; } // one-to-many
 
     }

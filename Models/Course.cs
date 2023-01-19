@@ -13,6 +13,7 @@ namespace UniversityManagementApp.Models
 
         public int Credits { get; set; }
 
+        // treba validator
         public int Semester { get; set; }
 
         [StringLength(100)]
@@ -22,19 +23,22 @@ namespace UniversityManagementApp.Models
         [Display(Name = "Education level")]
         public string? EducationLevel { get; set; }
 
-       // ICollection<CourseTeacher> Teachers { get; set; } //one course can have two(many teachers)
+        // ICollection<CourseTeacher> Teachers { get; set; } //one course can have two(many teachers)
 
 
+        [Display(Name = "First Teacher Id")]
         public int? FirstTeacherId { get; set; } // one-to-one
 
         //[ForeignKey("FirstTeacherId")]
+        [Display(Name = "First Teacher")]
         public Teacher FirstTeacher { get; set; } // reference object 
 
 
-
+        [Display(Name = "Second Teacher Id")]
         public int? SecondTeacherId { get; set; } // one-to-one
 
-       // [ForeignKey("SecondTeacherId")]
+        // [ForeignKey("SecondTeacherId")]
+        [Display(Name = "Second Teacher")]
         public Teacher SecondTeacher { get; set; }
 
         ICollection<Enrollment> Students { get; set; } // one course can be participated by many students

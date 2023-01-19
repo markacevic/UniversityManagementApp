@@ -1,0 +1,85 @@
+﻿@model UniversityManagementApp.ViewModels.StudentsByCourseViewModel //IEnumerable<UniversityManagementApp.Models.Student>
+
+@{
+    ViewData["Title"] = "Students by Course";
+}
+
+<h1>Students</h1>
+<form asp-asp-controller="Students" asp-action="Index1" method="get">
+    <p>
+        Teacher:
+        <select asp-for="SelectCourse" asp-items="Model.Courses">
+            <option value="">All</option>
+        </select>
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+            @Html.DisplayNameFor(model => model.Students.FirstOrDefault().StudentIndex)
+            </th>
+            <th>
+            @Html.DisplayNameFor(model => model.Students.FirstOrDefault().FirstName)
+            </th>
+            <th>
+            @Html.DisplayNameFor(model => model.Students.FirstOrDefault().LastName)
+            </th>
+            <!--
+            <th>
+        @Html.DisplayNameFor(model => model.Students.FirstOrDefault().EnrollmentDate)
+            </th>
+            <th>
+        @Html.DisplayNameFor(model => model.Students.FirstOrDefault().AcquiredCredits)
+            </th>
+            <th>
+        @Html.DisplayNameFor(model => model.Students.FirstOrDefault().CurrentSemester)
+            </th>
+            <th>
+        @Html.DisplayNameFor(model => model.Students.FirstOrDefault().EducationLevel)
+            </th>
+            <th></th>
+            -->
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Students)
+    {
+            <tr>
+                <td>
+                @Html.DisplayFor(modelItem => item.StudentIndex)
+                </td>
+                <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <!--
+                <td>
+            @Html.DisplayFor(modelItem => item.EnrollmentDate)
+                </td>
+                <td>
+            @Html.DisplayFor(modelItem => item.AcquiredCredits)
+                </td>
+                <td>
+            @Html.DisplayFor(modelItem => item.CurrentSemester)
+                </td>
+                <td>
+            @Html.DisplayFor(modelItem => item.EducationLevel)
+                </td>
+                -->
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+    }
+    </tbody>
+</table>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

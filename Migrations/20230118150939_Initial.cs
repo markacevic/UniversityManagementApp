@@ -13,7 +13,7 @@ namespace UniversityManagementApp.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    StudentId = table.Column<string>(maxLength: 10, nullable: true),
+                    StudentIndex = table.Column<string>(maxLength: 10, nullable: true),
                     FirstName = table.Column<string>(maxLength: 50, nullable: true),
                     LastName = table.Column<string>(maxLength: 50, nullable: true),
                     EnrollmentDate = table.Column<DateTime>(nullable: true),
@@ -54,7 +54,7 @@ namespace UniversityManagementApp.Migrations
                     Credits = table.Column<int>(nullable: false),
                     Semester = table.Column<int>(nullable: false),
                     Programme = table.Column<string>(maxLength: 100, nullable: true),
-                    EducationLevel = table.Column<string>(maxLength: 25, nullable: true),
+                    EducationLevel = table.Column<string>(maxLength: 100, nullable: true),
                     FirstTeacherId = table.Column<int>(nullable: true),
                     SecondTeacherId = table.Column<int>(nullable: true)
                 },
@@ -83,7 +83,7 @@ namespace UniversityManagementApp.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CourseId = table.Column<int>(nullable: false),
                     StudentId = table.Column<int>(nullable: false),
-                    Semester = table.Column<string>(maxLength: 10, nullable: true),
+                    Semester = table.Column<int>(nullable: true),
                     year = table.Column<int>(nullable: true),
                     grade = table.Column<int>(nullable: true),
                     ExamPoints = table.Column<int>(nullable: true),
