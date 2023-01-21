@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -160,18 +161,31 @@ namespace UniversityManagementApp.Controllers
                 return NotFound();
             }
 
-            var course = await _context.Course.FindAsync(id);
+            // var course = await _context.Course.FindAsync(id);
+            var course = _context.Course.Where(c => c.Id == id).Include(c => c.Students).First();
+
             if (course == null)
             {
                 return NotFound();
             }
+
+            IEnumerable<Student> students = _context.Student.AsEnumerable();
+            students = students.OrderBy(s => s.FullName);
+
+            StudentsToCourseViewModel viewmodel = new StudentsToCourseViewModel
+            {
+                Course = course,
+                StudentsList = new MultiSelectList(students, "Id", "FullName"),
+                SelectedStudents = course.Students.Select(sa => sa.StudentId)
+            };
 
             //ViewData["FirstTeacherId"] = new SelectList(_context.Teacher, "Id", "Id", course.FirstTeacherId);
             //ViewData["SecondTeacherId"] = new SelectList(_context.Teacher, "Id", "Id", course.SecondTeacherId);
             ViewData["FirstTeacherId"] = new SelectList(_context.Set<Teacher>(), "Id", "FullName", course.FirstTeacherId);
             ViewData["SecondTeacherId"] = new SelectList(_context.Set<Teacher>(), "Id", "FullName", course.SecondTeacherId);
 
-            return View(course);
+            //return View(course);
+            return View(viewmodel);
 
             
         }
@@ -185,9 +199,10 @@ namespace UniversityManagementApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Credits,Semester,Programme,EducationLevel,FirstTeacherId,SecondTeacherId")] Course course)
+        //public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Credits,Semester,Programme,EducationLevel,FirstTeacherId,SecondTeacherId")] Course course)
+        public async Task<IActionResult> Edit(int id, StudentsToCourseViewModel viewmodel)
         {
-            if (id != course.Id)
+            if (id != viewmodel.Course.Id) //if (id != course.Id)
             {
                 return NotFound();
             }
@@ -196,12 +211,26 @@ namespace UniversityManagementApp.Controllers
             {
                 try
                 {
-                    _context.Update(course);
+                    _context.Update(viewmodel.Course);  //_context.Update(course);
                     await _context.SaveChangesAsync();
+
+                    // added code start
+                    IEnumerable<int> listStudents = viewmodel.SelectedStudents; //novoselektiranite
+                    IQueryable<Enrollment> toBeRemoved = _context.Enrollment.Where(s => !listStudents.Contains(s.StudentId) && s.CourseId == id);
+                    _context.Enrollment.RemoveRange(toBeRemoved);
+
+                    IEnumerable<int> existStudents = _context.Enrollment.Where(s => listStudents.Contains(s.StudentId) && s.CourseId == id).Select(s => s.StudentId); 
+                    IEnumerable<int> newStudents = listStudents.Where(s => !existStudents.Contains(s)); 
+                    foreach (int studentId in newStudents)
+                    {
+                        _context.Enrollment.Add(new Enrollment { StudentId = studentId, CourseId = id });
+                    }
+                    await _context.SaveChangesAsync();
+                    // end
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CourseExists(course.Id))
+                    if (!CourseExists(viewmodel.Course.Id)) //if (!CourseExists(course.Id))
                     {
                         return NotFound();
                     }
@@ -214,10 +243,12 @@ namespace UniversityManagementApp.Controllers
             }
             //ViewData["FirstTeacherId"] = new SelectList(_context.Teacher, "Id", "Id", course.FirstTeacherId);
             //ViewData["SecondTeacherId"] = new SelectList(_context.Teacher, "Id", "Id", course.SecondTeacherId);
-            ViewData["FirstTeacherId"] = new SelectList(_context.Set<Teacher>(), "Id", "FullName", course.FirstTeacherId);
-            ViewData["SecondTeacherId"] = new SelectList(_context.Set<Teacher>(), "Id", "FullName", course.SecondTeacherId);
+            //ViewData["FirstTeacherId"] = new SelectList(_context.Set<Teacher>(), "Id", "FullName", course.FirstTeacherId);
+           // ViewData["SecondTeacherId"] = new SelectList(_context.Set<Teacher>(), "Id", "FullName", course.SecondTeacherId);
+            ViewData["FirstTeacherId"] = new SelectList(_context.Set<Teacher>(), "Id", "FullName", viewmodel.Course.FirstTeacherId);
+            ViewData["SecondTeacherId"] = new SelectList(_context.Set<Teacher>(), "Id", "FullName", viewmodel.Course.SecondTeacherId);
 
-            return View(course);
+            return View(viewmodel); //return View(course);
         }
 
 

@@ -89,8 +89,7 @@ namespace UniversityManagementApp.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Student
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var student = await _context.Student.FirstOrDefaultAsync(m => m.Id == id);
             if (student == null)
             {
                 return NotFound();

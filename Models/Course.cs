@@ -41,6 +41,6 @@ namespace UniversityManagementApp.Models
         [Display(Name = "Second Teacher")]
         public Teacher SecondTeacher { get; set; }
 
-        ICollection<Enrollment> Students { get; set; } // one course can be participated by many students
+        public ICollection<Enrollment> Students { get; set; } // one course can be participated by many students
     }
 }
