@@ -1,18 +1,57 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using UniversityManagementApp.Areas.Identity.Data;
 using UniversityManagementApp.Data;
 
 namespace UniversityManagementApp.Models
 {
     public class SeedData
     {
+        public static async Task CreateUserRoles(IServiceProvider serviceProvider)
+        {
+            var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var UserManager = serviceProvider.GetRequiredService<UserManager<UniversityManagementAppUser>>();
+
+            IdentityResult roleResult;
+
+            //add admin role
+            var roleCheck = await RoleManager.RoleExistsAsync("Admin"); //dali postoi takva uloga
+            if (!roleCheck) { roleResult = await RoleManager.CreateAsync(new IdentityRole("Admin")); } //kreiraj uloga
+
+            UniversityManagementAppUser user = await UserManager.FindByEmailAsync("admin@proba.com"); // najdi takov user
+            if (user == null)
+            { 
+                var User = new UniversityManagementAppUser();
+
+                User.Email = "admin@universitymanagmentapp.com";
+                User.UserName = "admin@universitymanagmentapp.com";
+                string userPWD = "Admin123";
+                IdentityResult chkUser = await UserManager.CreateAsync(User, userPWD);
+
+                //add default user to role admin
+                if (chkUser.Succeeded)
+                {
+                    var result1 = await UserManager.AddToRoleAsync(User, "Admin");
+                }
+
+            }
+        }
+
+
+
+
         public static void Initialize(IServiceProvider serviceProvider)
         {
             using (var context = new UniversityManagementAppContext(serviceProvider.GetRequiredService<DbContextOptions<UniversityManagementAppContext>>()))
             {
+                // seed Admin
+                CreateUserRoles(serviceProvider).Wait(); 
+
                 if (context.Course.Any() || context.Student.Any() || context.Teacher.Any())
                 {
                     return;   // DB has been seeded

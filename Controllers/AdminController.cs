@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using UniversityManagementApp.Data;
@@ -22,6 +24,7 @@ namespace UniversityManagementApp.Controllers
         }
 
         //GET: Admin/Index/1
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index1(int? id, int? searchSemester, int? searchYear)
         {
             if (id == null)
@@ -53,9 +56,9 @@ namespace UniversityManagementApp.Controllers
 
 
 
-        
 
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Enroll(int? id)  // id e CourseId
         { 
             if (id == null)
@@ -88,6 +91,7 @@ namespace UniversityManagementApp.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Enroll(int id, EnrollViewModel viewmodel)
         {
             if (ModelState.IsValid)
@@ -126,6 +130,7 @@ namespace UniversityManagementApp.Controllers
         }
 
         //GET: Admin/Deactivate/4
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Deactivate(int? id)
         {
             if (id == null)
@@ -141,6 +146,7 @@ namespace UniversityManagementApp.Controllers
 
         //Post: Admin/Deactivate/4
         [HttpPost, ActionName("Deactivate")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Deactivate(int? id, DateTime finishDate)
         {
             if (id == null)

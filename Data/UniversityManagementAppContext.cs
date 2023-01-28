@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using UniversityManagementApp.Areas.Identity.Data;
 using UniversityManagementApp.Models;
 
 namespace UniversityManagementApp.Data
 {
-    public class UniversityManagementAppContext : DbContext
+    public class UniversityManagementAppContext : IdentityDbContext<UniversityManagementAppUser> //DbContext
     {
         public UniversityManagementAppContext (DbContextOptions<UniversityManagementAppContext> options)
             : base(options)
@@ -27,10 +29,12 @@ namespace UniversityManagementApp.Data
         {
             //builder.Entity<Enrollment>().HasOne<Student>(p => p.Student).WithMany(p => p.Courses).HasForeignKey(p => p.StudentId); //student.cs
             //builder.Entity<Enrollment>().HasOne<Course>(p => p.Course).WithMany(p => p.Students).HasForeignKey(p => p.CourseId ); //course.cs
-            
+
             //builder.Entity<Course>().HasOne(c => c.FirstTeacher).WithMany(t => t.Courses).HasForeignKey(c => c.FirstTeacherId);
             //builder.Entity<Course>().HasOne(c => c.SecondTeacher).WithMany(t => t.Courses).HasForeignKey(c => c.SecondTeacherId);
-        
+
+            base.OnModelCreating(builder);
         }
     }
 }
+
