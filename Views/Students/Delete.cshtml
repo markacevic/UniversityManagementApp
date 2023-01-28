@@ -10,6 +10,11 @@
 <div>
     <h4>Student</h4>
     <hr />
+    <img src="~/images/@Model.ProfilePicture"
+         class="square"
+         height="150" width="150"
+         asp-append-version="true" />
+    <hr />
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.StudentIndex)

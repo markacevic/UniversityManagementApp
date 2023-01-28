@@ -38,6 +38,8 @@ namespace UniversityManagementApp.Models
         [StringLength(25)]
         public string? EducationLevel { get; set; }
 
+
+        [Display(Name = "Full Name")]
         public string FullName
         {
             get { return String.Format("{0} {1}", FirstName, LastName); }
@@ -46,6 +48,7 @@ namespace UniversityManagementApp.Models
         public ICollection<Enrollment> Courses { get; set; } // one student can be enrolled to many courses
 
 
+        public string ProfilePicture { get; set; }
 
 
     }

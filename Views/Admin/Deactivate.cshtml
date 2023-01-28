@@ -1,0 +1,66 @@
+﻿@model UniversityManagementApp.Models.Enrollment
+
+@{
+    ViewData["Title"] = "Deactivate";
+}
+
+<h1>Add Finish Date to Enrollment</h1>
+
+<h3>Are you sure you want to deactivate this enrollment?</h3>
+<div>
+    <h4>Enrollment</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Student.FullName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Student.FullName)
+        </dd>
+
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Course.Title)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Course.Title)
+        </dd>
+
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Semester)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Semester)
+        </dd>
+
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.year)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.year)
+        </dd>
+
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.grade)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.grade)
+        </dd>
+        
+    </dl>
+    <!--
+    <form asp-action="Deactivate">
+        <input type="date" asp-for="" />
+        <input type="submit" value="Deactivate" class="btn btn-danger" /> |
+        <a asp-action="Index1">Back to List</a>
+    </form>
+    -->
+    <form method="post" asp-action="Deactivate">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <div>
+            <label asp-for="FinishDate">Finish date</label>
+            <input type="date" asp-for="FinishDate" />
+           <!-- <span asp-validation-for="FinishDate"></span> -->
+        </div>
+        <button type="submit">Save</button>
+    </form>
+</div>

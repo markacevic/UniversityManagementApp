@@ -1,0 +1,113 @@
+﻿@model UniversityManagementApp.ViewModels.StudentsByYearViewModel //IEnumerable<UniversityManagementApp.Models.Student>
+
+@{
+    ViewData["Title"] = "All Students";
+}
+
+<h1>Students</h1>
+<form asp-asp-controller="Teacher" asp-action="Students" method="get">
+    <p>
+        Year:
+            <select asp-for="SearchYear" asp-items="Model.Years"></select>
+        <input type="submit" value="Filter" />
+    </p>
+
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                @Html.DisplayNameFor(model => model.Enrollments.FirstOrDefault().Student.FullName)
+                </th>
+
+                <th>
+                @Html.DisplayNameFor(model => model.Enrollments.FirstOrDefault().Student.StudentIndex)
+                </th>
+
+                <th>
+                @Html.DisplayNameFor(model => model.Enrollments.FirstOrDefault().ProjectUrl)
+                </th>
+
+                <th>
+                @Html.DisplayNameFor(model => model.Enrollments.FirstOrDefault().ProjectPoints)
+                </th>
+
+                <th>
+                @Html.DisplayNameFor(model => model.Enrollments.FirstOrDefault().SeminalUrl)
+                </th>
+
+                <th>
+                @Html.DisplayNameFor(model => model.Enrollments.FirstOrDefault().SeminalPoints)
+                </th>
+
+                <th>
+                @Html.DisplayNameFor(model => model.Enrollments.FirstOrDefault().ExamPoints)
+                </th>
+
+                <th>
+                @Html.DisplayNameFor(model => model.Enrollments.FirstOrDefault().AdditionalPoints)
+                </th>
+
+                <th>
+                @Html.DisplayNameFor(model => model.Enrollments.FirstOrDefault().grade)
+                </th>
+
+                <th>
+                @Html.DisplayNameFor(model => model.Enrollments.FirstOrDefault().FinishDate)
+                </th>
+        
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Enrollments)
+    {
+        <tr>
+                <td>
+                @Html.DisplayFor(modelItem => item.Student.FullName)
+                </td>
+
+                <td>
+                @Html.DisplayFor(modelItem => item.Student.StudentIndex)
+                </td>
+
+                <td>
+                @Html.DisplayFor(modelItem => item.ProjectUrl)
+                </td>
+
+                <td>
+                @Html.DisplayFor(modelItem => item.ProjectPoints)
+                </td>
+
+                <td>
+                @Html.DisplayFor(modelItem => item.SeminalUrl)
+                </td>
+
+                <td>
+                @Html.DisplayFor(modelItem => item.SeminalPoints)
+                </td>
+
+                <td>
+                @Html.DisplayFor(modelItem => item.ExamPoints)
+                </td>
+
+                <td>
+                @Html.DisplayFor(modelItem => item.AdditionalPoints)
+                </td>
+
+                <td>
+                @Html.DisplayFor(modelItem => item.grade)
+                </td>
+
+                <td>
+                @Html.DisplayFor(modelItem => item.FinishDate)
+                </td>
+                @if (!item.FinishDate.HasValue)
+                {
+                    <td> 
+                        <a asp-action="Edit" asp-route-id="@item.Id" > Edit</a>
+                    </td>
+                }
+        </tr>
+    }
+    </tbody>
+</table>

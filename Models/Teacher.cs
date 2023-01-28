@@ -40,5 +40,7 @@ namespace UniversityManagementApp.Models
 
         ICollection<Course> Courses { get; set; } // one-to-many
 
+        public string ProfilePicture { get; set; }
+
     }
 }

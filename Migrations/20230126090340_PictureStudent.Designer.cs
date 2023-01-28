@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UniversityManagementApp.Data;
 
 namespace UniversityManagementApp.Migrations
 {
     [DbContext(typeof(UniversityManagementAppContext))]
-    partial class UniversityManagementAppContextModelSnapshot : ModelSnapshot
+    [Migration("20230126090340_PictureStudent")]
+    partial class PictureStudent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -142,6 +144,7 @@ namespace UniversityManagementApp.Migrations
                         .HasMaxLength(50);
 
                     b.Property<string>("ProfilePicture")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StudentIndex")
@@ -182,9 +185,6 @@ namespace UniversityManagementApp.Migrations
                     b.Property<string>("OfficeNumber")
                         .HasColumnType("nvarchar(25)")
                         .HasMaxLength(25);
-
-                    b.Property<string>("ProfilePicture")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

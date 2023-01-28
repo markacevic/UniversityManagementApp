@@ -70,6 +70,12 @@
             @Html.DisplayFor(modelItem => item.EducationLevel)
                 </td>
                 -->
+                    <td>
+                        <img src="~/images/@item.ProfilePicture"
+                         class="square"
+                         height="60" width="60"
+                         asp-append-version="true" />
+                    </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

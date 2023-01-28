@@ -1,0 +1,112 @@
+﻿@model IEnumerable<UniversityManagementApp.Models.Enrollment>
+
+@{
+    ViewData["Title"] = "Student's courses";
+}
+
+<h1>@ViewData["FullName"]'s courses </h1>
+<img src="~/images/@ViewData["ProfilePicture"]"
+     class="square"
+     height="150" width="150"
+     asp-append-version="true" />
+<hr />
+
+<!--
+<form asp-asp-controller="Courses" asp-action="Index" method="get">
+    <p>
+        Semester:
+        <select asp-for="SearchSemester" asp-items="Model.Semesters">
+            <option value="">All</option>
+        </select>
+        Programme:
+        <select asp-for="SearchProgramme" asp-items="Model.Programmes">
+            <option value="">All</option>
+        </select>
+
+        Course Title: <input type="text" asp-for="SearchTitle" />
+        <input type="submit" value="Filter" />
+    </p>
+
+</form>
+-->
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+             @Html.DisplayNameFor(model => model.Course.Title)
+            </th>
+            
+            <th>
+            @Html.DisplayNameFor(model => model.ProjectPoints)
+            </th>
+
+            <th>
+            @Html.DisplayNameFor(model => model.SeminalPoints)
+            </th>
+
+            <th>
+            @Html.DisplayNameFor(model => model.AdditionalPoints)
+            </th>
+
+            <th>
+            @Html.DisplayNameFor(model => model.ExamPoints)
+            </th>
+
+            <th>
+            @Html.DisplayNameFor(model => model.grade)
+            </th>
+
+            <th>
+            @Html.DisplayNameFor(model => model.FinishDate)
+            </th>
+
+            <th></th>
+                
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+               
+                <td>
+                @Html.DisplayFor(modelItem => item.Course.Title)
+                </td>
+
+                <td>
+                @Html.DisplayFor(modelItem => item.ProjectPoints)
+                </td>
+
+                <td>
+                @Html.DisplayFor(modelItem => item.SeminalPoints)
+                </td>
+
+                <td>
+                @Html.DisplayFor(modelItem => item.AdditionalPoints)
+                </td>
+
+                <td>
+                @Html.DisplayFor(modelItem => item.ExamPoints)
+                </td>
+
+                <td>
+                @Html.DisplayFor(modelItem => item.grade)
+                </td>
+
+                <td>
+                @Html.DisplayFor(modelItem => item.FinishDate)
+                </td>
+                @if (!item.FinishDate.HasValue)
+                {
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Project/Seminal</a>
+                    </td>
+                }
+                
+                
+            </tr>
+
+        }
+    </tbody>
+</table>
+

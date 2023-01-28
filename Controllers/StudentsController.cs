@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.Hosting;
 using UniversityManagementApp.Data;
 using UniversityManagementApp.Models;
 using UniversityManagementApp.ViewModels;
@@ -15,12 +18,14 @@ namespace UniversityManagementApp.Controllers
     public class StudentsController : Controller
     {
         private readonly UniversityManagementAppContext _context;
+        private readonly IWebHostEnvironment webHostEnvironment;
 
 
 
-        public StudentsController(UniversityManagementAppContext context)
+        public StudentsController(UniversityManagementAppContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            webHostEnvironment = hostEnvironment;
         }
 
 
@@ -118,15 +123,32 @@ namespace UniversityManagementApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,StudentIndex,FirstName,LastName,EnrollmentDate,AcquiredCredits,CurrentSemester,EducationLevel")] Student student)
+        //public async Task<IActionResult> Create([Bind("Id,StudentIndex,FirstName,LastName,EnrollmentDate,AcquiredCredits,CurrentSemester,EducationLevel")] Student student)
+        public async Task<IActionResult> Create(int id, PictureStudentViewModel viewmodel)
         {
             if (ModelState.IsValid)
             {
+                //new code start
+                string uniqueFileName = UploadedFile(viewmodel);
+
+                Student student = new Student
+                {
+                    StudentIndex = viewmodel.Student.StudentIndex,
+                    FirstName = viewmodel.Student.FirstName,
+                    LastName = viewmodel.Student.LastName,
+                    EnrollmentDate = viewmodel.Student.EnrollmentDate,
+                    AcquiredCredits = viewmodel.Student.AcquiredCredits,
+                    CurrentSemester = viewmodel.Student.CurrentSemester,
+                    EducationLevel = viewmodel.Student.EducationLevel,
+                    ProfilePicture = uniqueFileName
+                };
+                //end
+
                 _context.Add(student);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(student);
+            return View(viewmodel);
         }
 
 
@@ -146,7 +168,14 @@ namespace UniversityManagementApp.Controllers
             {
                 return NotFound();
             }
-            return View(student);
+            PictureStudentViewModel viewmodel = new PictureStudentViewModel() // ne znam dali e potrebno
+            {
+                Student = student,
+                ProfileImage = null
+            };
+
+
+            return View(viewmodel);
         }
 
 
@@ -159,9 +188,10 @@ namespace UniversityManagementApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,StudentIndex,FirstName,LastName,EnrollmentDate,AcquiredCredits,CurrentSemester,EducationLevel")] Student student)
+        //public async Task<IActionResult> Edit(int id, [Bind("Id,StudentIndex,FirstName,LastName,EnrollmentDate,AcquiredCredits,CurrentSemester,EducationLevel")] Student student)
+        public async Task<IActionResult> Edit(int id,  PictureStudentViewModel viewmodel)
         {
-            if (id != student.Id)
+            if (id != viewmodel.Student.Id)
             {
                 return NotFound();
             }
@@ -170,12 +200,28 @@ namespace UniversityManagementApp.Controllers
             {
                 try
                 {
+                    //new code start
+                    string uniqueFileName = UploadedFile(viewmodel);
+
+                    Student student = _context.Student.Where(s => s.Id == id).First();
+
+                    student.StudentIndex = viewmodel.Student.StudentIndex;
+                    student.FirstName = viewmodel.Student.FirstName;
+                    student.LastName = viewmodel.Student.LastName;
+                    student.EnrollmentDate = viewmodel.Student.EnrollmentDate;
+                    student.AcquiredCredits = viewmodel.Student.AcquiredCredits;
+                    student.CurrentSemester = viewmodel.Student.CurrentSemester;
+                    student.EducationLevel = viewmodel.Student.EducationLevel;
+                    student.ProfilePicture = uniqueFileName;
+                    //end
+
                     _context.Update(student);
                     await _context.SaveChangesAsync();
+                   
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StudentExists(student.Id))
+                    if (!StudentExists(viewmodel.Student.Id))
                     {
                         return NotFound();
                     }
@@ -186,8 +232,42 @@ namespace UniversityManagementApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(student);
+            return NotFound(); //View(viewmodel);
         }
+
+
+        private string UploadedFile(PictureStudentViewModel viewmodel)
+        {
+            string uniqueFileName = null;
+
+            if (viewmodel.ProfileImage != null)
+            {
+                string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "images");
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(viewmodel.ProfileImage.FileName);
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    viewmodel.ProfileImage.CopyTo(fileStream);
+                }
+                return uniqueFileName;
+            }
+            return string.Empty;
+            
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

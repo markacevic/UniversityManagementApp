@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,11 +16,16 @@ namespace UniversityManagementApp.Controllers
     public class TeachersController : Controller
     {
         private readonly UniversityManagementAppContext _context;
+        private readonly IWebHostEnvironment webHostEnvironment;
 
-        public TeachersController(UniversityManagementAppContext context)
+        public TeachersController(UniversityManagementAppContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            webHostEnvironment = hostEnvironment;
         }
+
+
+
 
         // GET: Teachers
         public async Task<IActionResult> Index(string searchFullName, string searchDegree, string searchAcademicRank)
@@ -53,6 +60,10 @@ namespace UniversityManagementApp.Controllers
             return View(viewmodel);
         }
 
+
+
+
+
         // GET: Teachers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -71,27 +82,55 @@ namespace UniversityManagementApp.Controllers
             return View(teacher);
         }
 
+
+
+
+
         // GET: Teachers/Create
         public IActionResult Create()
         {
             return View();
         }
 
+
+
+
         // POST: Teachers/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Degree,AcademicRank,OfficeNumber,HireDate")] Teacher teacher)
+        //public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Degree,AcademicRank,OfficeNumber,HireDate")] Teacher teacher)
+        public async Task<IActionResult> Create(int id, PictureTeacherViewModel viewmodel)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(teacher);
+                    //new code start
+                    string uniqueFileName = UploadedFile(viewmodel);
+
+                    Teacher teacher = new Teacher
+                    {
+                        FirstName = viewmodel.Teacher.FirstName,
+                        LastName = viewmodel.Teacher.LastName,
+                        AcademicRank = viewmodel.Teacher.AcademicRank,
+                        OfficeNumber = viewmodel.Teacher.OfficeNumber,
+                        Degree = viewmodel.Teacher.Degree,
+                        HireDate = viewmodel.Teacher.HireDate,
+                        ProfilePicture = uniqueFileName
+                    };
+                    //end
+
+
+                    _context.Add(teacher);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(teacher);
+            return View(viewmodel);
         }
+
+
+
+
 
         // GET: Teachers/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -106,7 +145,15 @@ namespace UniversityManagementApp.Controllers
             {
                 return NotFound();
             }
-            return View(teacher);
+
+            PictureTeacherViewModel viewmodel = new PictureTeacherViewModel()
+            {
+                Teacher = teacher,
+                //ProfileImage = null
+            };
+
+
+            return View(viewmodel);
         }
 
         // POST: Teachers/Edit/5
@@ -114,9 +161,10 @@ namespace UniversityManagementApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Degree,AcademicRank,OfficeNumber,HireDate")] Teacher teacher)
+        //public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Degree,AcademicRank,OfficeNumber,HireDate")] Teacher teacher)
+        public async Task<IActionResult> Edit(int id, PictureTeacherViewModel viewmodel)
         {
-            if (id != teacher.Id)
+            if (id != viewmodel.Teacher.Id)
             {
                 return NotFound();
             }
@@ -125,12 +173,26 @@ namespace UniversityManagementApp.Controllers
             {
                 try
                 {
+                    //new code start
+                    string uniqueFileName = UploadedFile(viewmodel);
+
+                    Teacher teacher = _context.Teacher.Where(s => s.Id == id).First();
+
+                    teacher.FirstName = viewmodel.Teacher.FirstName;
+                    teacher.LastName = viewmodel.Teacher.LastName;
+                    teacher.Degree = viewmodel.Teacher.Degree;
+                    teacher.AcademicRank = viewmodel.Teacher.AcademicRank;
+                    teacher.OfficeNumber = viewmodel.Teacher.OfficeNumber;
+                    teacher.HireDate = viewmodel.Teacher.HireDate;
+                    teacher.ProfilePicture = uniqueFileName;
+                    //end
+
                     _context.Update(teacher);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TeacherExists(teacher.Id))
+                    if (!TeacherExists(viewmodel.Teacher.Id))
                     {
                         return NotFound();
                     }
@@ -141,8 +203,29 @@ namespace UniversityManagementApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(teacher);
+            return View(viewmodel);
         }
+
+        private string UploadedFile(PictureTeacherViewModel viewmodel)
+        {
+            string uniqueFileName = null;
+
+            if (viewmodel.ProfileImage != null)
+            {
+                string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "images");
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(viewmodel.ProfileImage.FileName);
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    viewmodel.ProfileImage.CopyTo(fileStream);
+                }
+                return uniqueFileName;
+            }
+            return string.Empty;
+
+        }
+
+
 
         // GET: Teachers/Delete/5
         public async Task<IActionResult> Delete(int? id)

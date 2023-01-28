@@ -21,6 +21,8 @@ namespace UniversityManagementApp.Models
         public int? Semester { get; set; }
 
         public int? year { get; set; }
+
+        [Display(Name = "Grade")]
         public int? grade { get; set; }
 
         [Display(Name = "Exam points")]
@@ -37,12 +39,15 @@ namespace UniversityManagementApp.Models
         public int? AdditionalPoints { get; set; }
 
         [DataType(DataType.Date)]
+        [Display(Name = "Finish Date")]
         public DateTime? FinishDate { get; set; }
 
         [StringLength(255)]
+        [Display(Name = "Seminal file")]
         public string? SeminalUrl { get; set; }
 
         [StringLength(255)]
+        [Display(Name = "Project URL")]
         public string? ProjectUrl { get; set; }
 
 

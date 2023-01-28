@@ -1,0 +1,43 @@
+﻿@model UniversityManagementApp.ViewModels.SeminalViewModel //UniversityManagementApp.Models.Enrollment
+
+@{
+    ViewData["Title"] = "Edit Enrollment";
+}
+
+<h1>Insert Project and Seminal</h1>
+<h4>Course: @ViewData["Course"]</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Enrollment.Id" />
+            <div class="form-group">
+                <label asp-for="Enrollment.ProjectUrl" class="control-label"></label>
+                <input asp-for="Enrollment.ProjectUrl" class="form-control" type="url" />
+                <span asp-validation-for="Enrollment.ProjectUrl" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+            <label asp-for="SeminalUrl" class="control-label"></label>
+                <div class="custom-file">
+                    <input asp-for="SeminalUrl" class="custom-file-input" id="customFile" type="file" accept=".doc,.docx,.pdf">
+                    <label class="custom-file-label" for="customFile">Choose file</label>
+                </div>
+                <span asp-validation-for="SeminalUrl" class="text-danger"></span>
+            </div>
+           
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" asp-route-id=@ViewData["Student"]>Back to Your Courses</a>
+</div>
+
+
+

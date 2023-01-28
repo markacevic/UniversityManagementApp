@@ -9,6 +9,11 @@
 <div>
     <h4>Teacher</h4>
     <hr />
+    <img src="~/images/@Model.ProfilePicture"
+         class="square"
+         height="150" width="150"
+         asp-append-version="true" />
+    <hr />
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.FirstName)
@@ -48,6 +53,7 @@
         </dd>
     </dl>
 </div>
+<hr/>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>

@@ -1,0 +1,69 @@
+﻿@model UniversityManagementApp.ViewModels.EnrollmentsBySemesterYear
+
+@{
+    ViewData["Title"] = "Enrollments";
+}
+
+<h1>Enrollments</h1>
+
+<p>
+    <a asp-action="Enroll" asp-route-id="@Model.IDCourse">Create New Enrollments for this course</a>
+</p>
+
+<form asp-asp-controller="Admin" asp-action="Index1" method="get">
+    <p> 
+        Semester:  <input type="number" asp-for="SearchSemester" /> 
+        year:  <input type="number" asp-for="SearchYear" />
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Enrollments.FirstOrDefault().Course.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Enrollments.FirstOrDefault().Student.FullName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Enrollments.FirstOrDefault().Semester)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Enrollments.FirstOrDefault().year)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Enrollments.FirstOrDefault().FinishDate)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Enrollments)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Course.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Student.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Semester)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.year)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FinishDate)
+                </td>
+                @if (!item.FinishDate.HasValue)
+                {
+                    <td>
+                        <a asp-action="Deactivate" asp-route-id="@item.Id">Deactivate</a>
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
