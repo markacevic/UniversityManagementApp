@@ -10,10 +10,10 @@
     @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
     {
         <a asp-action="Create">Create New</a>
+            <a asp-action="Index1">Students by Course</a>
     }
-
-    <a asp-action="Index1">Students by Course</a>
 </p>
+
 <form asp-asp-controller="Students" asp-action="Index" method="get">
     <p>
         Index:

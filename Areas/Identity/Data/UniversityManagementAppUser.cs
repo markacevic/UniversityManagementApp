@@ -10,10 +10,8 @@ namespace UniversityManagementApp.Areas.Identity.Data
     // Add profile data for application users by adding properties to the UniversityManagementAppUser class
     public class UniversityManagementAppUser : IdentityUser
     {
-        public string Role { get; set; }
-        public int? TeacherId { get; set; }
         public Teacher Teacher { get; set; }
-        public int? StudentId { get; set; }
         public Student Student { get; set; }
+       // public List<IdentityUserRole<string>> Roles { get; set; }
     }
 }

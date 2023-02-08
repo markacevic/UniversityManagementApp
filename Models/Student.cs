@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using UniversityManagementApp.Areas.Identity.Data;
 
 namespace UniversityManagementApp.Models
 {
@@ -49,6 +50,11 @@ namespace UniversityManagementApp.Models
 
 
         public string ProfilePicture { get; set; }
+
+
+
+        public string UserId { get; set; }
+        public UniversityManagementAppUser User { get; set; }
 
 
     }

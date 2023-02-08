@@ -1,12 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.VisualBasic;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using UniversityManagementApp.Data;
 using UniversityManagementApp.Models;
@@ -14,6 +18,7 @@ using UniversityManagementApp.ViewModels;
 
 namespace UniversityManagementApp.Controllers
 {
+    [Authorize(Roles = "Teacher")]
     public class TeacherController : Controller
     {
         private readonly UniversityManagementAppContext _context;
@@ -32,6 +37,15 @@ namespace UniversityManagementApp.Controllers
             if (teacher == null)
             {
                 return NotFound();
+            }
+
+            // restrict access
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId != teacher.UserId)
+            {
+                string host = Request.Host.ToString();
+                string url = $"{Request.Scheme}://{host}/Identity/Account/AccessDenied";
+                return Redirect(url);
             }
 
             IQueryable<Course> courses = _context.Course.Where( c => c.FirstTeacherId == id || c.SecondTeacherId == id);
@@ -53,7 +67,19 @@ namespace UniversityManagementApp.Controllers
             {
                 return NotFound();
             }
-            
+
+
+            // restrict access
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            Teacher teacher = _context.Teacher.Where(t => t.UserId == userId).FirstOrDefault();
+            IEnumerable<int> teacher_courses_ids = _context.Course.Where(c => c.FirstTeacherId == teacher.Id || c.SecondTeacherId == teacher.Id).Select(c => c.Id).AsEnumerable();
+            if (!teacher_courses_ids.Contains(id))
+            {
+                string host = Request.Host.ToString();
+                string url = $"{Request.Scheme}://{host}/Identity/Account/AccessDenied";
+                return Redirect(url);
+            }
+
             var lastYear = searchYear;
 
             if (searchYear == null)

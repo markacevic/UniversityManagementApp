@@ -63,15 +63,18 @@ namespace UniversityManagementApp.Controllers
 
 
         // GET: Students By Course
+
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index1(string selectCourse)
         {
             IQueryable<string> courses = _context.Course.OrderBy(c => c.Title).Select(c => c.Title).Distinct(); 
             IQueryable<Student> students = _context.Student.AsQueryable();
-
+            
             if (!String.IsNullOrEmpty(selectCourse))
             { 
                 int CourseID = _context.Course.Where(c => c.Title.Contains(selectCourse)).FirstOrDefault().Id;
-                students = students.Where(s => s.Id == CourseID);
+                IQueryable<int> students_ids = _context.Enrollment.Where(e => e.CourseId == CourseID).Select(e => e.StudentId).AsQueryable();
+                students = students.Where(s => students_ids.Contains(s.Id));
             }
 
             var viewmodel = new StudentsByCourseViewModel

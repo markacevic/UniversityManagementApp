@@ -9,18 +9,27 @@ using UniversityManagementApp.Data;
 using UniversityManagementApp.Models;
 using Microsoft.CodeAnalysis.Emit;
 using UniversityManagementApp.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
+using Microsoft.AspNetCore.Identity;
+using UniversityManagementApp.Migrations;
+using UniversityManagementApp.Areas.Identity.Data;
+using System.Security.Claims;
 
 namespace UniversityManagementApp.Controllers
 {
+    [Authorize(Roles = "Student")]
     public class StudentController : Controller
     {
         private readonly UniversityManagementAppContext _context;
         private readonly IWebHostEnvironment webHostEnvironment;
+        private readonly UserManager<UniversityManagementAppUser> _userManager;
 
-        public StudentController(UniversityManagementAppContext context, IWebHostEnvironment webHostEnvironment)
+        public StudentController(UniversityManagementAppContext context, IWebHostEnvironment webHostEnvironment, UserManager<UniversityManagementAppUser> userManager)
         {
             _context = context;
             this.webHostEnvironment = webHostEnvironment;
+            _userManager = userManager;
         }
 
 
@@ -34,6 +43,14 @@ namespace UniversityManagementApp.Controllers
             if (student == null)
             {
                 return NotFound();
+            }
+            // restrict access
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;  
+            if (userId != student.UserId)
+            {
+                string host = Request.Host.ToString();
+                string url = $"{Request.Scheme}://{host}/Identity/Account/AccessDenied";
+                return Redirect(url);
             }
 
             IQueryable<Enrollment> enrollments = _context.Enrollment.Where(e => e.StudentId == id).AsQueryable();
@@ -57,7 +74,7 @@ namespace UniversityManagementApp.Controllers
 
             //var enrollment = await _context.Enrollment.FindAsync(id);
             Enrollment enrollment = _context.Enrollment.Where(e => e.Id == id).Include(e => e.Course).Include(e => e.Student).First();
-
+           
             if (enrollment.FinishDate.HasValue)
             {
                 return NotFound();
@@ -66,6 +83,16 @@ namespace UniversityManagementApp.Controllers
             if (enrollment == null)
             {
                 return NotFound();
+            }
+
+            // restrict access
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            string student_userId = _context.Student.Where(s => s.Id == enrollment.StudentId).Select(s => s.UserId).FirstOrDefault();
+            if (student_userId != userId)
+            {
+                string host = Request.Host.ToString();
+                string url = $"{Request.Scheme}://{host}/Identity/Account/AccessDenied";
+                return Redirect(url);
             }
 
             ViewData["Course"] = enrollment.CourseId; // kako da se prati Course.Title ?
@@ -91,6 +118,16 @@ namespace UniversityManagementApp.Controllers
             if (id != viewmodel.Enrollment.Id)
             {
                 return NotFound();
+            }
+
+            // restrict access
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            string student_userId = _context.Student.Where(s => s.Id == viewmodel.Enrollment.StudentId).Select(s => s.UserId).FirstOrDefault();
+            if (student_userId != userId)
+            {
+                string host = Request.Host.ToString();
+                string url = $"{Request.Scheme}://{host}/Identity/Account/AccessDenied";
+                return Redirect(url);
             }
 
             Enrollment old_enrollment = _context.Enrollment.Where(e => e.Id == id).First();

@@ -12,6 +12,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using UniversityManagementApp.Areas.Identity.Data;
+using Newtonsoft.Json.Linq;
+using UniversityManagementApp.Data;
+using UniversityManagementApp.Models;
 
 namespace UniversityManagementApp.Areas.Identity.Pages.Account
 {
@@ -21,14 +24,17 @@ namespace UniversityManagementApp.Areas.Identity.Pages.Account
         private readonly UserManager<UniversityManagementAppUser> _userManager;
         private readonly SignInManager<UniversityManagementAppUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly UniversityManagementAppContext _context;
 
         public LoginModel(SignInManager<UniversityManagementAppUser> signInManager, 
             ILogger<LoginModel> logger,
-            UserManager<UniversityManagementAppUser> userManager)
+            UserManager<UniversityManagementAppUser> userManager,
+            UniversityManagementAppContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _context = context;
         }
 
         [BindProperty]
@@ -84,7 +90,24 @@ namespace UniversityManagementApp.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
+                    //return LocalRedirect(returnUrl);
+
+                    //added code start
+                    var user = await _userManager.FindByEmailAsync(Input.Email);
+                    if (await _userManager.IsInRoleAsync(user, "Teacher"))
+                    {
+                        int teacherId = _context.Teacher.Where( t => t.UserId == user.Id ).FirstOrDefault().Id;
+                        return RedirectToAction("Index", "Teacher", new { id = teacherId });
+                    }
+                    else if (await _userManager.IsInRoleAsync(user, "Student"))
+                    {
+                        int studentId = _context.Student.Where(s => s.UserId == user.Id).FirstOrDefault().Id;
+                        return RedirectToAction("Index", "Student", new { id = studentId });
+                    }
+                    else if (await _userManager.IsInRoleAsync(user, "Admin"))
+                    {
+                        return RedirectToAction("Register", "User");
+                    } // end
                 }
                 if (result.RequiresTwoFactor)
                 {

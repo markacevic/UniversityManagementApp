@@ -23,7 +23,7 @@ namespace UniversityManagementApp.Controllers
             _context = context;
         }
 
-        //GET: Admin/Index/1
+        //GET: Admin/Index1/1
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index1(int? id, int? searchSemester, int? searchYear)
         {
@@ -92,7 +92,7 @@ namespace UniversityManagementApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Enroll(int id, EnrollViewModel viewmodel)
+        public async Task<IActionResult> Enroll(int id, EnrollViewModel viewmodel) // id == CourseId
         {
             if (ModelState.IsValid)
             {
@@ -120,8 +120,7 @@ namespace UniversityManagementApp.Controllers
                 await _context.SaveChangesAsync();
                 // end
 
-
-                //return RedirectToAction(nameof(Index1));
+                return RedirectToAction("Index1", "Admin", new { id = id });
             }
 
 

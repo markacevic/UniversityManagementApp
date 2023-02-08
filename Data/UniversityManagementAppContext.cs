@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using UniversityManagementApp.Areas.Identity.Data;
@@ -12,7 +13,7 @@ namespace UniversityManagementApp.Data
 {
     public class UniversityManagementAppContext : IdentityDbContext<UniversityManagementAppUser> //DbContext
     {
-        public UniversityManagementAppContext (DbContextOptions<UniversityManagementAppContext> options)
+        public UniversityManagementAppContext(DbContextOptions<UniversityManagementAppContext> options)
             : base(options)
         {
         }
@@ -24,6 +25,7 @@ namespace UniversityManagementApp.Data
         public DbSet<UniversityManagementApp.Models.Teacher> Teacher { get; set; }
 
         public DbSet<UniversityManagementApp.Models.Enrollment> Enrollment { get; set; }
+        public DbSet<IdentityRole> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -34,6 +36,17 @@ namespace UniversityManagementApp.Data
             //builder.Entity<Course>().HasOne(c => c.SecondTeacher).WithMany(t => t.Courses).HasForeignKey(c => c.SecondTeacherId);
 
             base.OnModelCreating(builder);
+
+            builder.Entity<Teacher>()
+            .HasOne(t => t.User)
+            .WithOne(u => u.Teacher)
+            .HasForeignKey<Teacher>(t => t.UserId);
+
+            builder.Entity<Student>()
+                .HasOne(s => s.User)
+                .WithOne(u => u.Student)
+                .HasForeignKey<Student>(s => s.UserId);
+
         }
     }
 }

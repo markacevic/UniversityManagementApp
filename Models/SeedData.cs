@@ -23,6 +23,12 @@ namespace UniversityManagementApp.Models
             var roleCheck = await RoleManager.RoleExistsAsync("Admin"); //dali postoi takva uloga
             if (!roleCheck) { roleResult = await RoleManager.CreateAsync(new IdentityRole("Admin")); } //kreiraj uloga
 
+            var roleCheck1 = await RoleManager.RoleExistsAsync("Student"); //dali postoi takva uloga
+            if (!roleCheck1) { roleResult = await RoleManager.CreateAsync(new IdentityRole("Student")); } //kreiraj uloga
+
+            var roleCheck2 = await RoleManager.RoleExistsAsync("Teacher"); //dali postoi takva uloga
+            if (!roleCheck2) { roleResult = await RoleManager.CreateAsync(new IdentityRole("Teacher")); } //kreiraj uloga
+
             UniversityManagementAppUser user = await UserManager.FindByEmailAsync("admin@proba.com"); // najdi takov user
             if (user == null)
             { 

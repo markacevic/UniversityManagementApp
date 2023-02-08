@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims;
+@inject UniversityManagementApp.Data.UniversityManagementAppContext _context;
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -11,7 +14,29 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">UniversityManagementApp</a>
+               
+                @if (User.IsInRole("Teacher"))
+                {
+                    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                    int teacherId = _context.Teacher.Where( t => t.UserId == userId ).FirstOrDefault().Id;
+                    <a class="navbar-brand" asp-area="" asp-controller="Teacher" asp-action="Index" asp-route-id="@teacherId">UniversityManagementApp</a>
+                }
+                else if (User.IsInRole("Student"))
+                {
+                    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                    int studentId = _context.Student.Where(t => t.UserId == userId).FirstOrDefault().Id;
+                    <a class="navbar-brand" asp-area="" asp-controller="Student" asp-action="Index" asp-route-id="@studentId">UniversityManagementApp</a>
+                }
+                else if (User.IsInRole("Admin"))
+                {
+                    <a class="navbar-brand" asp-area="" asp-controller="User" asp-action="Register">UniversityManagementApp</a>
+                }
+                else
+                {
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">UniversityManagementApp</a>
+                }
+
+
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -39,6 +64,7 @@
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
